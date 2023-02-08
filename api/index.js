@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 
 const model = require('./model')
 const Event = model.Event
@@ -6,6 +7,7 @@ const Event = model.Event
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use('cors')
 
 app.get('/test', function (req, res) {
   console.log('- API Test -')
