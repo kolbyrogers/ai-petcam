@@ -14,23 +14,7 @@ export default {
   name: 'IndexPage',
   data() {
     return {
-      events: [
-        {
-          title: 'Apollo at the Trashcan',
-          time: '2020-01-01 12:45',
-          img: 'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg',
-        },
-        {
-          title: 'Apollo at the Bowl',
-          time: '2020-01-01 12:00',
-          img: 'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg',
-        },
-        {
-          title: 'Apollo at the Couch',
-          time: '2020-01-01 11:00',
-          img: 'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg',
-        },
-      ],
+      events: [],
     }
   },
   methods: {
@@ -38,6 +22,7 @@ export default {
       try {
         const response = await this.$axios.get('/api/events')
         console.log(response.data)
+        this.events = response.data
       } catch (err) {
         console.log(err)
       }
