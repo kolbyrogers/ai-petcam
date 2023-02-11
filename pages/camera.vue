@@ -31,6 +31,7 @@ export default {
     select: null,
     items: ['Dog', 'Cat', 'Human'],
     errors: [],
+    imgUrl: '',
   }),
   methods: {
     capture() {
@@ -40,9 +41,36 @@ export default {
       const ctx = canvas.getContext('2d')
       ctx.drawImage(this.video, 0, 0, 640, 480)
       canvas.toBlob((blob) => {
-        console.log(blob)
+        this.saveImage(blob)
       })
     },
+
+    async saveImage(blob) {
+      console.log('Saving Blob:', blob)
+      const timestamp = Date.now()
+      const imgRef = this.$fire.storage
+        .ref()
+        .child('images/' + timestamp + '.png')
+      await imgRef.put(blob)
+      this.imgUrl = await imgRef.getDownloadURL()
+      this.saveEvent()
+    },
+
+    async saveEvent() {
+      const event = {
+        name: this.name,
+        object: 'Trashcan',
+        time: Date.now(),
+        imgUrl: this.imgUrl,
+      }
+      try {
+        const response = await this.$axios.post('/api/events', event)
+        console.log(response.data)
+      } catch (err) {
+        console.log(err)
+      }
+    },
+
     startCamera() {
       const constraints = {
         video: {

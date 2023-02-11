@@ -41,10 +41,27 @@ export default {
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
     '@nuxtjs/axios',
+    '@nuxtjs/firebase',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [],
+
+  firebase: {
+    config: {
+      apiKey: 'AIzaSyDhGfBNa8jKupOlUuGPGAmVqzUW4plwkQk',
+      authDomain: 'ai-petcam.firebaseapp.com',
+      databaseURL: 'https://ai-petcam-default-rtdb.firebaseio.com',
+      projectId: 'ai-petcam',
+      storageBucket: 'ai-petcam.appspot.com',
+      messagingSenderId: '920776181642',
+      appId: '1:920776181642:web:ce2856a1971bf252a7aa73',
+    },
+
+    services: {
+      storage: true,
+    },
+  },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
