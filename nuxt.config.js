@@ -13,8 +13,7 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - petcam',
-    title: 'petcam',
+    title: 'AI Petcam',
     htmlAttrs: {
       lang: 'en',
     },
