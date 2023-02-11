@@ -16,7 +16,9 @@
     </form>
     <br />
     <div v-show="configured">
-      <video width="100%" ref="video">Stream Unavailable</video>
+      <video playsinline autoplay width="100%" ref="video">
+        Stream Unavailable
+      </video>
       <v-btn class="mr-4" @click="capture">Capture</v-btn>
     </div>
   </div>
