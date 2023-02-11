@@ -46,28 +46,31 @@ export default {
     },
 
     async saveImage(blob) {
-      console.log('Saving Blob:', blob)
       const timestamp = Date.now()
-      const imgRef = this.$fire.storage
-        .ref()
-        .child('images/' + timestamp + '.png')
-      await imgRef.put(blob)
-      this.imgUrl = await imgRef.getDownloadURL()
-      this.saveEvent()
+      try {
+        const imgRef = this.$fire.storage
+          .ref()
+          .child('images/' + timestamp + '.png')
+        await imgRef.put(blob)
+        this.imgUrl = await imgRef.getDownloadURL()
+        this.saveEvent()
+      } catch (err) {
+        console.error(err)
+      }
     },
 
     async saveEvent() {
+      var d = new Date()
       const event = {
         name: this.name,
         object: 'Trashcan',
-        time: Date.now(),
+        time: d.toLocaleString(),
         imgUrl: this.imgUrl,
       }
       try {
         const response = await this.$axios.post('/api/events', event)
-        console.log(response.data)
       } catch (err) {
-        console.log(err)
+        console.error(err)
       }
     },
 
