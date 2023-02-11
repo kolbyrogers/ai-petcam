@@ -1,14 +1,29 @@
 <template>
   <div>
     <form v-if="!configured">
-      <v-text-field v-model="name" label="Name" required></v-text-field>
+      <v-text-field v-model="name" label="Pet Name" required></v-text-field>
       <v-select
         class="mb-8"
         v-model="select"
         :items="items"
-        label="Species"
+        label="Pet Species"
         required
       ></v-select>
+      <v-select
+        class="mb-8"
+        v-model="object"
+        :items="objects"
+        label="Alert me when my pet is near..."
+        required
+      ></v-select>
+      <v-text-field
+        v-model="phoneNumber"
+        label="Phone Number"
+        @input="acceptNumber"
+        :rules="[rules.counter]"
+        maxLength="14"
+        required
+      ></v-text-field>
       <div class="mb-4" v-for="error in errors" :key="error.id">
         {{ error }}
       </div>
@@ -31,11 +46,26 @@ export default {
     video: null,
     name: '',
     select: null,
+    phoneNumber: '',
     items: ['Dog', 'Cat', 'Human'],
+    object: null,
+    objects: ['Trashcan', 'Couch', 'Bed'],
     errors: [],
     imgUrl: '',
+    rules: {
+      counter: (value) => value.length <= 14,
+    },
   }),
   methods: {
+    acceptNumber() {
+      var x = this.phoneNumber
+        .replace(/\D/g, '')
+        .match(/(\d{0,3})(\d{0,3})(\d{0,4})/)
+      this.phoneNumber = !x[2]
+        ? x[1]
+        : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '')
+    },
+
     capture() {
       const canvas = document.createElement('canvas')
       canvas.width = 640
@@ -65,7 +95,7 @@ export default {
       var d = new Date()
       const event = {
         name: this.name,
-        object: 'Trashcan',
+        object: this.object,
         time: d.toLocaleString(),
         imgUrl: this.imgUrl,
       }
@@ -98,7 +128,7 @@ export default {
     },
     submit() {
       this.errors = []
-      if (!this.name || !this.select) {
+      if (!this.name || !this.select || !this.object) {
         this.errors.push('Please fill out all fields')
         return
       }
