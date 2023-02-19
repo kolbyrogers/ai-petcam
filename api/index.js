@@ -36,6 +36,24 @@ app.get('/events', (req, res) => {
   Event.find().then((events) => res.json(events))
 })
 
+app.delete('/events/:id', async (req, res) => {
+  console.log('- Delete event -')
+  try {
+    const event = await Event.findOne({
+      _id: req.params.id,
+    })
+    if (event) {
+      await event.delete()
+      res.status(200).json('Event deleted')
+    } else {
+      res.status(404).json('Event not found')
+    }
+  } catch (err) {
+    console.error(err)
+    res.status(500).json(err)
+  }
+})
+
 export default {
   path: '/api',
   handler: app,

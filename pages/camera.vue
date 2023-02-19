@@ -40,15 +40,21 @@
 </template>
 
 <script>
+import '@tensorflow/tfjs-backend-cpu'
+import '@tensorflow/tfjs-backend-webgl'
+import * as cocoSsd from '@tensorflow-models/coco-ssd'
+import { runInThisContext } from 'vm'
+
 export default {
   data: () => ({
     configured: false,
     video: null,
-    name: '',
-    select: null,
-    phoneNumber: '',
-    items: ['Dog', 'Cat', 'Human'],
-    object: null,
+    predictions: [],
+    name: 'Kolby',
+    select: 'Person',
+    phoneNumber: '4357730653',
+    items: ['Dog', 'Cat', 'Person'],
+    object: 'Bed',
     objects: ['Trashcan', 'Couch', 'Bed'],
     errors: [],
     imgUrl: '',
@@ -65,7 +71,23 @@ export default {
         ? x[1]
         : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '')
     },
-
+    async predictWebcam() {
+      this.predictions = await app.model.detect(this.video)
+      for (let n = 0; n < this.predictions.length; n++) {
+        if (this.predictions[n].score > 0.66) {
+          if (this.predictions[n].class === this.select.toLowerCase()) {
+            console.log(this.name, 'detected')
+          }
+          const p =
+            this.predictions[n].class +
+            ' - with ' +
+            Math.round(parseFloat(this.predictions[n].score) * 100) +
+            '% confidence.'
+          console.log(p)
+        }
+      }
+      window.requestAnimationFrame(this.predictWebcam)
+    },
     capture() {
       const canvas = document.createElement('canvas')
       canvas.width = 640
@@ -105,7 +127,6 @@ export default {
         console.error(err)
       }
     },
-
     startCamera() {
       const constraints = {
         video: {
@@ -120,6 +141,9 @@ export default {
           .then((stream) => {
             this.video.srcObject = stream
             this.video.play()
+            this.video.onloadeddata = (event) => {
+              this.predictWebcam()
+            }
           })
           .catch((err) => {
             console.log(err)
@@ -136,8 +160,13 @@ export default {
       this.startCamera()
     },
   },
+
   mounted() {
     this.video = this.$refs.video
+    cocoSsd.load().then(function (loadedModel) {
+      app.model = loadedModel
+      console.log('Model loaded')
+    })
   },
 }
 </script>
