@@ -30,10 +30,34 @@
       <v-btn class="mr-4" @click="submit"> Save </v-btn>
     </form>
     <br />
-    <div v-show="configured">
+    <div v-show="configured" class="videoView">
       <video playsinline autoplay width="100%" ref="video">
         Stream Unavailable
       </video>
+      <p
+        v-for="prediction in predictions"
+        :key="prediction.id"
+        :style="{
+          left: prediction.bbox[0] * ratioX + 'px',
+          top: prediction.bbox[1] * ratioY + 'px',
+          width: prediction.bbox[2] * ratioX + 'px',
+        }"
+        class="prediction"
+      >
+        {{ prediction.class }} with
+        {{ Math.round(parseFloat(prediction.score) * 100) }}% confidence
+      </p>
+      <div
+        v-for="prediction in predictions"
+        :key="prediction.id"
+        :style="{
+          left: prediction.bbox[0] * ratioX + 'px',
+          top: prediction.bbox[1] * ratioY + 'px',
+          width: prediction.bbox[2] * ratioX + 'px',
+          height: prediction.bbox[3] * ratioY + 'px',
+        }"
+        class="highlighter"
+      ></div>
       <v-btn class="mr-4" @click="capture">Capture</v-btn>
     </div>
   </div>
@@ -43,13 +67,14 @@
 import '@tensorflow/tfjs-backend-cpu'
 import '@tensorflow/tfjs-backend-webgl'
 import * as cocoSsd from '@tensorflow-models/coco-ssd'
-import { runInThisContext } from 'vm'
 
 export default {
   data: () => ({
     configured: false,
     video: null,
     predictions: [],
+    ratioX: 1,
+    ratioY: 1,
     name: 'Kolby',
     select: 'Person',
     phoneNumber: '4357730653',
@@ -63,6 +88,10 @@ export default {
     },
   }),
   methods: {
+    recalculateVideoScale() {
+      this.ratioY = this.video.clientHeight / this.video.videoHeight
+      this.ratioX = this.video.clientWidth / this.video.videoWidth
+    },
     acceptNumber() {
       var x = this.phoneNumber
         .replace(/\D/g, '')
@@ -72,33 +101,32 @@ export default {
         : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '')
     },
     async predictWebcam() {
-      this.predictions = await app.model.detect(this.video)
-      for (let n = 0; n < this.predictions.length; n++) {
-        if (this.predictions[n].score > 0.66) {
-          if (this.predictions[n].class === this.select.toLowerCase()) {
-            console.log(this.name, 'detected')
-          }
-          const p =
-            this.predictions[n].class +
-            ' - with ' +
-            Math.round(parseFloat(this.predictions[n].score) * 100) +
-            '% confidence.'
-          console.log(p)
+      this.predictions = []
+      let predictions = await app.model.detect(this.video)
+      for (let n = 0; n < predictions.length; n++) {
+        if (predictions[n].score > 0.5) {
+          this.predictions.push(predictions[n])
         }
       }
       window.requestAnimationFrame(this.predictWebcam)
+      window.addEventListener('resize', this.recalculateVideoScale)
     },
     capture() {
       const canvas = document.createElement('canvas')
-      canvas.width = 640
-      canvas.height = 480
+      canvas.width = this.video.videoWidth
+      canvas.height = this.video.videoHeight
       const ctx = canvas.getContext('2d')
-      ctx.drawImage(this.video, 0, 0, 640, 480)
+      ctx.drawImage(
+        this.video,
+        0,
+        0,
+        this.video.videoWidth,
+        this.video.videoHeight
+      )
       canvas.toBlob((blob) => {
         this.saveImage(blob)
       })
     },
-
     async saveImage(blob) {
       const timestamp = Date.now()
       try {
@@ -131,8 +159,6 @@ export default {
       const constraints = {
         video: {
           facingMode: 'environment',
-          width: 640,
-          height: 480,
         },
       }
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -142,6 +168,7 @@ export default {
             this.video.srcObject = stream
             this.video.play()
             this.video.onloadeddata = (event) => {
+              this.recalculateVideoScale()
               this.predictWebcam()
             }
           })
@@ -160,7 +187,6 @@ export default {
       this.startCamera()
     },
   },
-
   mounted() {
     this.video = this.$refs.video
     cocoSsd.load().then(function (loadedModel) {
@@ -170,3 +196,26 @@ export default {
   },
 }
 </script>
+
+<style>
+.videoView {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.highlighter {
+  background: transparent;
+  border: 2px solid rgba(0, 255, 0, 0.5);
+  z-index: 1;
+  position: absolute;
+}
+.prediction {
+  position: absolute;
+  padding: 5px;
+  color: #fff;
+  border: 1px solid rgba(0, 255, 0, 0.5);
+  z-index: 2;
+  font-size: 12px;
+  margin: 0;
+}
+</style>
