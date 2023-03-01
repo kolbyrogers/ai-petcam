@@ -1,66 +1,73 @@
 <template>
-  <div>
-    <form v-if="!configured">
-      <v-text-field v-model="name" label="Pet Name" required></v-text-field>
-      <v-select
-        class="mb-8"
-        v-model="select"
-        :items="items"
-        label="Pet Species"
-        required
-      ></v-select>
-      <v-select
-        class="mb-8"
-        v-model="object"
-        :items="objects"
-        label="Alert me when my pet is near..."
-        required
-      ></v-select>
-      <v-text-field
-        v-model="phoneNumber"
-        label="Phone Number"
-        @input="acceptNumber"
-        :rules="[rules.counter]"
-        maxLength="14"
-        required
-      ></v-text-field>
-      <div class="mb-4" v-for="error in errors" :key="error.id">
-        {{ error }}
+  <v-row justify="center" align="center">
+    <v-col cols="12" sm="8" md="6">
+      <div>
+        <form v-if="!configured">
+          <v-text-field v-model="name" label="Pet Name" required></v-text-field>
+          <v-select
+            class="mb-8"
+            v-model="select"
+            :items="items"
+            label="Pet Species"
+            required
+          ></v-select>
+          <v-select
+            class="mb-8"
+            v-model="object"
+            :items="objects"
+            label="Alert me when my pet is near..."
+            required
+          ></v-select>
+          <v-text-field
+            v-model="phoneNumber"
+            label="Phone Number"
+            @input="acceptNumber"
+            :rules="[rules.counter]"
+            maxLength="14"
+            required
+          ></v-text-field>
+          <div class="mb-4" v-for="error in errors" :key="error.id">
+            {{ error }}
+          </div>
+          <div v-if="!model">
+            <h3>Loading model...</h3>
+          </div>
+          <v-btn v-else class="mr-4" @click="submit"> Save </v-btn>
+        </form>
+        <br />
+        <div v-show="configured" class="videoView">
+          <video playsinline autoplay width="100%" ref="video">
+            Stream Unavailable
+          </video>
+          <p
+            v-for="prediction in predictions"
+            :key="prediction.id"
+            :style="{
+              left: prediction.bbox[0] * ratioX + 'px',
+              top: prediction.bbox[1] * ratioY + 'px',
+              width: prediction.bbox[2] * ratioX + 'px',
+            }"
+            class="prediction"
+          >
+            {{ prediction.class }} with
+            {{ Math.round(parseFloat(prediction.score) * 100) }}% confidence
+          </p>
+          <div
+            v-for="prediction in predictions"
+            :key="prediction.id"
+            :style="{
+              left: prediction.bbox[0] * ratioX + 'px',
+              top: prediction.bbox[1] * ratioY + 'px',
+              width: prediction.bbox[2] * ratioX + 'px',
+              height: prediction.bbox[3] * ratioY + 'px',
+            }"
+            class="highlighter"
+          ></div>
+          <v-btn class="mr-4" @click="capture">Capture</v-btn>
+        </div>
       </div>
-      <v-btn class="mr-4" @click="submit"> Save </v-btn>
-    </form>
-    <br />
-    <div v-show="configured" class="videoView">
-      <video playsinline autoplay width="100%" ref="video">
-        Stream Unavailable
-      </video>
-      <p
-        v-for="prediction in predictions"
-        :key="prediction.id"
-        :style="{
-          left: prediction.bbox[0] * ratioX + 'px',
-          top: prediction.bbox[1] * ratioY + 'px',
-          width: prediction.bbox[2] * ratioX + 'px',
-        }"
-        class="prediction"
-      >
-        {{ prediction.class }} with
-        {{ Math.round(parseFloat(prediction.score) * 100) }}% confidence
-      </p>
-      <div
-        v-for="prediction in predictions"
-        :key="prediction.id"
-        :style="{
-          left: prediction.bbox[0] * ratioX + 'px',
-          top: prediction.bbox[1] * ratioY + 'px',
-          width: prediction.bbox[2] * ratioX + 'px',
-          height: prediction.bbox[3] * ratioY + 'px',
-        }"
-        class="highlighter"
-      ></div>
-      <v-btn class="mr-4" @click="capture">Capture</v-btn>
-    </div>
-  </div>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -70,6 +77,7 @@ import * as cocoSsd from '@tensorflow-models/coco-ssd'
 
 export default {
   data: () => ({
+    model: false,
     configured: false,
     video: null,
     predictions: [],
@@ -189,8 +197,9 @@ export default {
   },
   mounted() {
     this.video = this.$refs.video
-    cocoSsd.load().then(function (loadedModel) {
+    cocoSsd.load().then((loadedModel) => {
       app.model = loadedModel
+      this.model = true
       console.log('Model loaded')
     })
   },
