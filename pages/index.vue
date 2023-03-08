@@ -1,12 +1,14 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <h1>Feed</h1>
-      <div v-for="(event, index) in events" :key="index">
-        <Event :event="event" />
-      </div>
-    </v-col>
-  </v-row>
+  <div id="home">
+    <v-row justify="center" align="center">
+      <v-col cols="12" sm="8" md="6">
+        <h2>Feed</h2>
+        <div v-for="(event, index) in events" :key="index" id="feed">
+          <Event :event="event" />
+        </div>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>

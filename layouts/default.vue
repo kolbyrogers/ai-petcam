@@ -1,6 +1,7 @@
 <template>
   <v-app dark>
     <v-navigation-drawer
+      id="nav-drawer"
       v-model="drawer"
       :mini-variant="miniVariant"
       :clipped="clipped"
@@ -25,7 +26,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+      <v-app-bar-nav-icon id="nav" @click.stop="drawer = !drawer" />
 
       <v-toolbar-title v-text="title" />
       <v-spacer />

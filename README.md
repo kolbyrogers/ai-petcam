@@ -1,4 +1,4 @@
-# petcam
+# AI Petcam
 
 ## Build Setup
 
