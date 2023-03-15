@@ -23,7 +23,6 @@ export default {
     async getEvents() {
       try {
         const response = await this.$axios.get('/api/events')
-        console.log(response.data)
         this.events = response.data.reverse()
       } catch (err) {
         console.log(err)

@@ -84,6 +84,7 @@
           <v-btn class="mr-4" @click="capture">Capture</v-btn>
           <v-btn class="mr-4" @click="sendAlert">Alert</v-btn>
           <v-btn class="mr-4" @click="playNoise">Playback</v-btn>
+          <v-btn class="mr-4" @click="stopCamera">Stop Camera</v-btn>
         </div>
       </div>
     </v-col>
@@ -97,21 +98,24 @@ import * as cocoSsd from '@tensorflow-models/coco-ssd'
 
 export default {
   data: () => ({
+    cooldown: true,
+    interactObject: null,
     alert: false,
     playback: false,
     model: false,
     configured: false,
     video: null,
+    camStarted: false,
     predictions: [],
     ratioX: 1,
     ratioY: 1,
     name: 'Kolby',
     select: 'Person',
-    object: 'Couch',
+    object: 'Cell Phone',
     noise: 'Whistle',
     phoneNumber: '4357730653',
     items: ['Dog', 'Cat', 'Person'],
-    objects: ['Trashcan', 'Couch', 'Bed'],
+    objects: ['Trashcan', 'Couch', 'Bed', 'Cell Phone'],
     noises: ['Whistle', 'Clap', 'No'],
     noisesDict: {
       Whistle: '/whistle.wav',
@@ -126,7 +130,7 @@ export default {
   }),
   methods: {
     sendAlert() {
-      // Send alert to phone through messagebird API
+      // TODO Send alert through messagebird API
     },
     playNoise() {
       var a = new Audio(this.noisesDict[this.noise])
@@ -150,11 +154,21 @@ export default {
       let predictions = await app.model.detect(this.video)
       for (let n = 0; n < predictions.length; n++) {
         if (predictions[n].score > 0.5) {
+          if (this.select.toLowerCase() == predictions[n].class) {
+            this.checkInteractions(predictions[n])
+          }
           this.predictions.push(predictions[n])
         }
       }
       window.requestAnimationFrame(this.predictWebcam)
       window.addEventListener('resize', this.recalculateVideoScale)
+    },
+    stopCamera() {
+      if (this.camStarted) {
+        this.configured = false
+        this.video.pause()
+        this.video.srcObject.getTracks().forEach((track) => track.stop())
+      }
     },
     capture() {
       const canvas = document.createElement('canvas')
@@ -190,7 +204,7 @@ export default {
       var d = new Date()
       const event = {
         name: this.name,
-        object: this.object,
+        object: this.interactObject,
         time: d.toLocaleString(),
         imgUrl: this.imgUrl,
       }
@@ -210,6 +224,7 @@ export default {
         navigator.mediaDevices
           .getUserMedia(constraints)
           .then((stream) => {
+            this.camStarted = true
             this.video.srcObject = stream
             this.video.play()
             this.video.onloadeddata = (event) => {
@@ -221,6 +236,67 @@ export default {
             console.error(err)
           })
       }
+    },
+    distance(bbox1, bbox2) {
+      let x1 = bbox1[0]
+      let x2 = bbox2[0]
+      let y1 = bbox1[1]
+      let y2 = bbox2[1]
+      let width1 = bbox1[2]
+      let width2 = bbox2[2]
+      let height1 = bbox1[3]
+      let height2 = bbox2[3]
+      let midX1 = x1 + width1 / 2
+      let midX2 = x2 + width2 / 2
+      let midY1 = y1 + height1 / 2
+      let midY2 = y2 + height2 / 2
+
+      let xDif = Math.abs(midX1 - midX2) - width1 / 2 - width2 / 2
+      let yDif = Math.abs(midY1 - midY2) - height1 / 2 - height2 / 2
+
+      if (xDif < 0) {
+        // intersect in x plane
+        return Math.max(yDif, 0)
+      }
+
+      if (yDif < 0) {
+        // intersect in y plane
+        return Math.max(xDif, 0)
+      }
+
+      return Math.sqrt(xDif * xDif + yDif * yDif)
+    },
+    handleInteraction() {
+      if (this.cooldown) {
+        console.log(this.name + ' interacting with ' + this.interactObject)
+        this.cooldown = false
+        this.capture()
+        if (this.interactObject === this.object.toLowerCase()) {
+          if (this.alert) {
+            this.sendAlert()
+          }
+          if (this.playback) {
+            this.playNoise()
+          }
+        }
+        setTimeout(() => {
+          this.cooldown = true
+        }, 60000)
+      }
+    },
+    checkInteractions(item) {
+      for (let n = 0; n < this.predictions.length; n++) {
+        if (
+          this.isNear(item, this.predictions[n]) &&
+          this.predictions[n].class != this.select
+        ) {
+          this.interactObject = this.predictions[n].class
+          this.handleInteraction()
+        }
+      }
+    },
+    isNear(item1, item2) {
+      return this.distance(item1.bbox, item2.bbox) <= 0
     },
     submit() {
       this.errors = []
@@ -238,6 +314,10 @@ export default {
       app.model = loadedModel
       this.model = true
     })
+  },
+  beforeRouteLeave(to, from, next) {
+    this.stopCamera()
+    next()
   },
 }
 </script>
