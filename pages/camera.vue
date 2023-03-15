@@ -81,10 +81,6 @@
             }"
             class="highlighter"
           ></div>
-          <v-btn class="mr-4" @click="capture">Capture</v-btn>
-          <v-btn class="mr-4" @click="sendAlert">Alert</v-btn>
-          <v-btn class="mr-4" @click="playNoise">Playback</v-btn>
-          <v-btn class="mr-4" @click="stopCamera">Stop Camera</v-btn>
         </div>
       </div>
     </v-col>
@@ -300,7 +296,13 @@ export default {
     },
     submit() {
       this.errors = []
-      if (!this.name || !this.select || !this.object) {
+      if (
+        !this.name ||
+        !this.select ||
+        !this.object ||
+        (this.alert && !this.phoneNumber) ||
+        (this.playback && !this.noise)
+      ) {
         this.errors.push('Please fill out all fields')
         return
       }
