@@ -1,7 +1,5 @@
 import time
 
-# main
-
 
 @step('I navigate to AI Petcam')
 def step_impl(context):
@@ -45,4 +43,11 @@ def step_impl(context):
 def step_impl(context):
     context.execute_steps('''
         Then I wait on element "#nav-drawer" to be visible
+    ''')
+
+
+@step('I expect to see the navigation links')
+def step_impl(context):
+    context.execute_steps('''
+        Then I wait on element "#nav-links" to be visible
     ''')

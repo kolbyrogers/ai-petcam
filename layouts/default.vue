@@ -8,7 +8,7 @@
       fixed
       app
     >
-      <v-list>
+      <v-list id="nav-links">
         <v-list-item
           v-for="(item, i) in items"
           :key="i"

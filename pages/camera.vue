@@ -3,22 +3,29 @@
     <v-col cols="12" sm="8" md="6">
       <div>
         <form v-if="!configured">
-          <v-text-field v-model="name" label="Pet Name" required></v-text-field>
+          <v-text-field
+            class="my-8"
+            v-model="name"
+            label="Name"
+            required
+          ></v-text-field>
           <v-select
             class="mb-8"
             v-model="select"
             :items="items"
-            label="Pet Species"
+            label="Species"
             required
-          ></v-select>
-          <v-select
+          ></v-select
+          ><v-select
             class="mb-8"
             v-model="object"
             :items="objects"
-            label="Alert me when my pet is near..."
+            label="When my pet is near..."
             required
           ></v-select>
+          <v-checkbox v-model="alert" :label="`Alert me`"></v-checkbox>
           <v-text-field
+            v-if="alert"
             v-model="phoneNumber"
             label="Phone Number"
             @input="acceptNumber"
@@ -26,13 +33,24 @@
             maxLength="14"
             required
           ></v-text-field>
+          <v-checkbox v-model="playback" :label="`Play a noise`"></v-checkbox>
+          <v-select
+            v-if="playback"
+            class="mb-8"
+            v-model="noise"
+            :items="noises"
+            label="Noise"
+            required
+          ></v-select>
           <div class="mb-4" v-for="error in errors" :key="error.id">
             {{ error }}
           </div>
-          <div v-if="!model">
-            <h3>Loading model...</h3>
+          <div class="mt-8">
+            <div v-if="!model">
+              <h3>Loading model...</h3>
+            </div>
+            <v-btn v-else class="mr-4" @click="submit"> Save </v-btn>
           </div>
-          <v-btn v-else class="mr-4" @click="submit"> Save </v-btn>
         </form>
         <br />
         <div v-show="configured" class="videoView">
@@ -64,6 +82,8 @@
             class="highlighter"
           ></div>
           <v-btn class="mr-4" @click="capture">Capture</v-btn>
+          <v-btn class="mr-4" @click="sendAlert">Alert</v-btn>
+          <v-btn class="mr-4" @click="playNoise">Playback</v-btn>
         </div>
       </div>
     </v-col>
@@ -77,6 +97,8 @@ import * as cocoSsd from '@tensorflow-models/coco-ssd'
 
 export default {
   data: () => ({
+    alert: false,
+    playback: false,
     model: false,
     configured: false,
     video: null,
@@ -85,10 +107,17 @@ export default {
     ratioY: 1,
     name: 'Kolby',
     select: 'Person',
+    object: 'Couch',
+    noise: 'Whistle',
     phoneNumber: '4357730653',
     items: ['Dog', 'Cat', 'Person'],
-    object: 'Bed',
     objects: ['Trashcan', 'Couch', 'Bed'],
+    noises: ['Whistle', 'Clap', 'No'],
+    noisesDict: {
+      Whistle: '/whistle.wav',
+      Clap: '/clap.wav',
+      No: '/no.wav',
+    },
     errors: [],
     imgUrl: '',
     rules: {
@@ -96,6 +125,14 @@ export default {
     },
   }),
   methods: {
+    sendAlert() {
+      // Send alert to phone through messagebird API
+    },
+    playNoise() {
+      var a = new Audio(this.noisesDict[this.noise])
+      console.log(a)
+      a.play()
+    },
     recalculateVideoScale() {
       this.ratioY = this.video.clientHeight / this.video.videoHeight
       this.ratioX = this.video.clientWidth / this.video.videoWidth
@@ -181,7 +218,7 @@ export default {
             }
           })
           .catch((err) => {
-            console.log(err)
+            console.error(err)
           })
       }
     },
@@ -200,7 +237,6 @@ export default {
     cocoSsd.load().then((loadedModel) => {
       app.model = loadedModel
       this.model = true
-      console.log('Model loaded')
     })
   },
 }
