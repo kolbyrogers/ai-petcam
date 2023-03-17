@@ -114,9 +114,9 @@ export default {
     objects: ['Trashcan', 'Couch', 'Bed', 'Cell Phone'],
     noises: ['Whistle', 'Clap', 'No'],
     noisesDict: {
-      Whistle: '/whistle.wav',
-      Clap: '/clap.wav',
-      No: '/no.wav',
+      Whistle: '/whistle.mp3',
+      Clap: '/clap.mp3',
+      No: '/no.mp3',
     },
     errors: [],
     imgUrl: '',
