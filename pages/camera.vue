@@ -23,7 +23,7 @@
             label="When my pet is near..."
             required
           ></v-select>
-          <v-checkbox v-model="alert" :label="`Alert me`"></v-checkbox>
+          <v-checkbox v-model="alert" :label="`Alert me (beta)`"></v-checkbox>
           <v-text-field
             v-if="alert"
             v-model="phoneNumber"
@@ -203,7 +203,6 @@ export default {
       }
       try {
         const response = await this.$axios.post('/api/events', event)
-        console.table(response)
       } catch (err) {
         console.error(err)
       }
