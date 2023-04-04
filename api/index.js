@@ -1,6 +1,5 @@
 const express = require('express')
 const cors = require('cors')
-
 const model = require('./model')
 const Event = model.Event
 
@@ -9,14 +8,17 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cors())
 
+// Test
 app.get('/test', function (req, res) {
   console.log('- API Test -')
   res.send('Test successful')
 })
 
+// Events
 app.post('/events', async (req, res) => {
   console.log('- Create event -')
   const newEvent = new Event({
+    userid: req.body.uid,
     name: req.body.name,
     object: req.body.object,
     time: req.body.time,
@@ -31,9 +33,37 @@ app.post('/events', async (req, res) => {
   }
 })
 
-app.get('/events', (req, res) => {
+app.get('/events', async (req, res) => {
   console.log('- Get all events -')
-  Event.find().then((events) => res.json(events))
+  try {
+    const events = await Event.find()
+    if (events) {
+      console.log(events)
+      res.status(200).json(events)
+    } else {
+      res.status(404).json('Events not found')
+    }
+  } catch (err) {
+    console.error(err)
+    res.status(500).json(err)
+  }
+})
+
+app.get('/events/:uid', async (req, res) => {
+  console.log('- Get events by user -')
+  try {
+    const query = { userid: req.params.uid }
+    const events = await Event.find(query)
+    if (events) {
+      console.log(events)
+      res.status(200).json(events)
+    } else {
+      res.status(404).json('Events not found')
+    }
+  } catch (err) {
+    console.error(err)
+    res.status(500).json(err)
+  }
 })
 
 app.delete('/events/:id', async (req, res) => {

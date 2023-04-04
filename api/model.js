@@ -6,6 +6,9 @@ mongoose.connect(
 )
 
 const Event = mongoose.model('Event', {
+  userid: {
+    type: String,
+  },
   name: {
     type: String,
   },

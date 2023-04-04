@@ -1,7 +1,7 @@
 <template>
   <v-card class="mx-auto my-6">
     <v-img :src="event.imgUrl" height="300px"></v-img>
-    <v-card-title> {{ event.name }} interacting with {{ event.object }} </v-card-title>
+    <v-card-title> {{ event.name }} near {{ event.object }} </v-card-title>
     <v-card-subtitle>{{ event.time }}</v-card-subtitle>
   </v-card>
 </template>

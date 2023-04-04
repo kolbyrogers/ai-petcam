@@ -28,9 +28,8 @@
             v-if="alert"
             v-model="phoneNumber"
             label="Phone Number"
-            @input="acceptNumber"
-            :rules="[rules.counter]"
-            maxLength="14"
+            minLength="11"
+            maxLength="11"
             required
           ></v-text-field>
           <v-checkbox v-model="playback" :label="`Play a noise`"></v-checkbox>
@@ -67,8 +66,7 @@
             }"
             class="prediction"
           >
-            {{ prediction.class }} with
-            {{ Math.round(parseFloat(prediction.score) * 100) }}% confidence
+            {{ prediction.class }}
           </p>
           <div
             v-for="prediction in predictions"
@@ -81,6 +79,7 @@
             }"
             class="highlighter"
           ></div>
+          <v-btn @click="capture()"> Capture </v-btn>
         </div>
       </div>
     </v-col>
@@ -125,12 +124,9 @@ export default {
     },
   }),
   methods: {
-    sendAlert() {
-      // TODO Send alert through messagebird API
-    },
+    async sendAlert() {},
     playNoise() {
       var a = new Audio(this.noisesDict[this.noise])
-      console.log(a)
       a.play()
     },
     recalculateVideoScale() {
@@ -199,6 +195,7 @@ export default {
     async saveEvent() {
       var d = new Date()
       const event = {
+        uid: this.$fire.auth.currentUser.uid,
         name: this.name,
         object: this.interactObject,
         time: d.toLocaleString(),
@@ -206,6 +203,7 @@ export default {
       }
       try {
         const response = await this.$axios.post('/api/events', event)
+        console.table(response)
       } catch (err) {
         console.error(err)
       }
@@ -264,12 +262,10 @@ export default {
     },
     handleInteraction() {
       if (this.cooldown) {
-        console.log(this.name + ' interacting with ' + this.interactObject)
         this.cooldown = false
         this.capture()
         if (this.interactObject === this.object.toLowerCase()) {
           if (this.alert) {
-            this.sendAlert()
           }
           if (this.playback) {
             this.playNoise()
@@ -340,8 +336,6 @@ export default {
   position: absolute;
   padding: 5px;
   color: #fff;
-  border: 1px solid rgba(0, 255, 0, 0.5);
-  z-index: 2;
   font-size: 12px;
   margin: 0;
 }

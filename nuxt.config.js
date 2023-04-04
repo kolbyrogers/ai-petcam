@@ -2,9 +2,8 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   axios: {
-    baseURL: 'http://example.com',
-    // browserBaseURL: 'http://localhost:3000',
-    browserBaseURL: 'https://ai-petcam.onrender.com',
+    browserBaseURL: 'http://localhost:3000',
+    // browserBaseURL: 'https://ai-petcam.onrender.com',
   },
 
   serverMiddleware: ['~/api'],
@@ -46,6 +45,10 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [],
 
+  router: {
+    middleware: ['auth'],
+  },
+
   firebase: {
     config: {
       apiKey: 'AIzaSyDhGfBNa8jKupOlUuGPGAmVqzUW4plwkQk',
@@ -59,6 +62,14 @@ export default {
 
     services: {
       storage: true,
+      auth: {
+        persistence: 'local', // default
+        initialize: {
+          onAuthStateChangedAction: 'onAuthStateChangedAction',
+          subscribeManually: false,
+        },
+        ssr: false,
+      },
     },
   },
 
@@ -82,5 +93,7 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  build: {
+    postcss: null,
+  },
 }

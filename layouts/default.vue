@@ -26,10 +26,18 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app>
-      <v-app-bar-nav-icon id="nav" @click.stop="drawer = !drawer" />
-
+      <div v-if="isAuth">
+        <v-app-bar-nav-icon id="nav" @click.stop="drawer = !drawer" />
+      </div>
       <v-toolbar-title v-text="title" />
       <v-spacer />
+      <div v-if="isAuth">
+        {{ $fire.auth.currentUser.email }}
+        <v-btn color="warning" class="mx-5" @click="logout" text>Logout</v-btn>
+      </div>
+      <div v-else>
+        <v-btn to="/login" text>Login</v-btn>
+      </div>
     </v-app-bar>
     <v-main>
       <v-container>
@@ -53,9 +61,9 @@ export default {
       fixed: false,
       items: [
         {
-          icon: 'mdi-home',
-          title: 'Home',
-          to: '/',
+          icon: 'mdi-script-text',
+          title: 'Feed',
+          to: '/feed',
         },
         {
           icon: 'mdi-camera',
@@ -68,6 +76,17 @@ export default {
       rightDrawer: false,
       title: 'AI Pet Cam',
     }
+  },
+  methods: {
+    logout() {
+      console.log(this.$fire.auth)
+      this.$fire.auth.signOut()
+    },
+  },
+  computed: {
+    isAuth() {
+      return this.$store.state.user !== null
+    },
   },
 }
 </script>
