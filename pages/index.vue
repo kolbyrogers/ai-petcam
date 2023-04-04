@@ -16,7 +16,7 @@
           Lorem ipsum dolor sit amet consectetur adipisicing elit.
           Reprehenderit, hic!
         </p>
-        <v-btn id="btn" to="/feed">View feed</v-btn>
+        <v-btn id="btn" to="/camera">Get Started</v-btn>
       </v-col>
     </v-row>
   </div>
