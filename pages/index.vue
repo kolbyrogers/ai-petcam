@@ -3,20 +3,32 @@
     <v-row justify="center" align="center">
       <v-col cols="12" sm="8" md="6">
         <v-img id="petcam" src="ai-petcam.png"></v-img>
-        <h2>How to use</h2>
+        <h2>Welcome {{ $fire.auth.currentUser.displayName.split(' ')[0] }}!</h2>
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam, totam!
-          Perferendis iure eaque qui voluptas.
+          This web app utilizes the power of artificial intelligence to turn any
+          device, such as your old smartphone, into a smart pet monitoring
+          device
         </p>
+        <p>Here's how you can get started</p>
         <ul>
-          <li>Lorem ipsum dolor sit amet.</li>
-          <li>Lorem ipsum dolor sit amet.</li>
+          <li>
+            Place your device in a convenient spot in your home where you want
+            to monitor your pet. Make sure it has a clear view of the area where
+            your pet spends most of their time
+          </li>
+          <li>
+            Customize your petcam settings according to your preferences. You
+            can set a specific object of interest to monitor, such as your
+            couch, and set the app to send notifications, or play a sound when
+            your pet is near
+          </li>
+          <li>
+            The AI Petcam app also records photos when an interaction is
+            detected, so you can review past images and see what your pet has
+            been up to while you were away
+          </li>
         </ul>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Reprehenderit, hic!
-        </p>
-        <v-btn id="btn" to="/camera">Get Started</v-btn>
+        <v-btn id="btn" to="/camera">Start Monitoring</v-btn>
       </v-col>
     </v-row>
   </div>
@@ -37,19 +49,18 @@ export default {
 }
 h2 {
   text-align: center;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 300;
-  margin-top: 2rem;
   margin-bottom: 2rem;
 }
 p {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 300;
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
 ul {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 300;
   margin-top: 2rem;
   margin-bottom: 2rem;
