@@ -46,6 +46,8 @@
 
     <v-footer :absolute="!fixed" app>
       <span>&copy; {{ new Date().getFullYear() }}</span>
+      <v-spacer />
+      <h4 v-if="isAuth">{{ $fire.auth.currentUser.uid }}</h4>
     </v-footer>
   </v-app>
 </template>

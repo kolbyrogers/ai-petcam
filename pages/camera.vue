@@ -6,7 +6,7 @@
           <h3>
             Loading model...
             <v-progress-circular
-              id="indicator"
+              class="ml-3"
               indeterminate
               color="amber"
             ></v-progress-circular>
@@ -34,7 +34,10 @@
               label="When my pet is near..."
               required
             ></v-select>
-            <v-checkbox v-model="alert" :label="`Alert me (beta)`"></v-checkbox>
+            <v-checkbox
+              v-model="alert"
+              :label="`Alert me (in development)`"
+            ></v-checkbox>
             <v-text-field
               v-if="alert"
               v-model="phoneNumber"

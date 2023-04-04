@@ -15,9 +15,11 @@
             </v-card-text>
           </v-card>
         </div>
-        <div v-else v-for="(event, index) in events" :key="index" id="feed">
+        <div v-else>
           <h3>Feed</h3>
-          <Event :event="event" />
+          <div v-for="(event, index) in events" :key="index" id="feed">
+            <Event :event="event" />
+          </div>
         </div>
       </v-col>
     </v-row>
