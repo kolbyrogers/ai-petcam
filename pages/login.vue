@@ -44,7 +44,7 @@ export default {
         const provider = new this.$fireModule.auth.GoogleAuthProvider()
         let user = await this.$fire.auth.signInWithPopup(provider)
         if (user) {
-          this.$router.push('/feed')
+          this.$router.push('/')
         }
       } catch (err) {
         this.errors.push(err)
