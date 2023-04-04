@@ -2,55 +2,64 @@
   <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="6">
       <div>
-        <form v-if="!configured">
-          <v-text-field
-            class="my-8"
-            v-model="name"
-            label="Name"
-            required
-          ></v-text-field>
-          <v-select
-            class="mb-8"
-            v-model="select"
-            :items="items"
-            label="Species"
-            required
-          ></v-select
-          ><v-select
-            class="mb-8"
-            v-model="object"
-            :items="objects"
-            label="When my pet is near..."
-            required
-          ></v-select>
-          <v-checkbox v-model="alert" :label="`Alert me (beta)`"></v-checkbox>
-          <v-text-field
-            v-if="alert"
-            v-model="phoneNumber"
-            label="Phone Number"
-            minLength="11"
-            maxLength="11"
-            required
-          ></v-text-field>
-          <v-checkbox v-model="playback" :label="`Play a noise`"></v-checkbox>
-          <v-select
-            v-if="playback"
-            class="mb-8"
-            v-model="noise"
-            :items="noises"
-            label="Noise"
-            required
-          ></v-select>
-          <div class="mb-4" v-for="error in errors" :key="error.id">
-            {{ error }}
-          </div>
-          <div class="mt-8">
-            <div v-if="!model">
-              <h3>Loading model...</h3>
+        <div id="loading" v-if="!model">
+          <h3>
+            Loading model...
+            <v-progress-circular
+              id="indicator"
+              indeterminate
+              color="amber"
+            ></v-progress-circular>
+          </h3>
+        </div>
+        <div v-else>
+          <form v-if="!configured">
+            <v-text-field
+              class="my-8"
+              v-model="name"
+              label="Name"
+              required
+            ></v-text-field>
+            <v-select
+              class="mb-8"
+              v-model="select"
+              :items="items"
+              label="Species"
+              required
+            ></v-select
+            ><v-select
+              class="mb-8"
+              v-model="object"
+              :items="objects"
+              label="When my pet is near..."
+              required
+            ></v-select>
+            <v-checkbox v-model="alert" :label="`Alert me (beta)`"></v-checkbox>
+            <v-text-field
+              v-if="alert"
+              v-model="phoneNumber"
+              label="Phone Number"
+              minLength="11"
+              maxLength="11"
+              required
+            ></v-text-field>
+            <v-checkbox v-model="playback" :label="`Play a noise`"></v-checkbox>
+            <v-select
+              v-if="playback"
+              class="mb-8"
+              v-model="noise"
+              :items="noises"
+              label="Noise"
+              required
+            ></v-select>
+            <div class="mb-4" v-for="error in errors" :key="error.id">
+              {{ error }}
             </div>
-            <v-btn v-else class="mr-4" @click="submit"> Save </v-btn>
-          </div>
-        </form>
+            <div class="mt-8">
+              <v-btn class="mr-4" @click="submit"> Save </v-btn>
+            </div>
+          </form>
+        </div>
         <br />
         <div v-show="configured" class="videoView">
           <video playsinline autoplay width="100%" ref="video">
@@ -335,6 +344,17 @@ export default {
   padding: 5px;
   color: #fff;
   font-size: 12px;
+  margin: 0;
+}
+#loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#loading h3 {
+  color: #fff;
+  font-size: 20px;
   margin: 0;
 }
 </style>
