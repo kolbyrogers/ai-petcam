@@ -2,8 +2,21 @@
   <div id="home">
     <v-row justify="center" align="center">
       <v-col cols="12" sm="8" md="6">
-        <h2>Feed</h2>
-        <div v-for="(event, index) in events" :key="index" id="feed">
+        <h3>Feed</h3>
+        <div v-if="events.length == 0">
+          <v-img id="petcam" src="ai-petcam.png"></v-img>
+          <v-card>
+            <v-card-text>
+              <h3>Nothing to see here yet!</h3>
+              <p>
+                Once you've set up your petcam, you'll see events here when your
+                pet is near objects of interest
+              </p>
+              <v-btn to="/">Learn how</v-btn>
+            </v-card-text>
+          </v-card>
+        </div>
+        <div v-else v-for="(event, index) in events" :key="index" id="feed">
           <Event :event="event" />
         </div>
       </v-col>
@@ -37,3 +50,9 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+#petcam {
+  opacity: 20%;
+}
+</style>
