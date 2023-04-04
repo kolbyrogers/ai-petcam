@@ -2,7 +2,6 @@
   <div id="home">
     <v-row justify="center" align="center">
       <v-col cols="12" sm="8" md="6">
-        <h3>Feed</h3>
         <div v-if="events.length == 0">
           <v-img id="petcam" src="ai-petcam.png"></v-img>
           <v-card>
@@ -17,6 +16,7 @@
           </v-card>
         </div>
         <div v-else v-for="(event, index) in events" :key="index" id="feed">
+          <h3>Feed</h3>
           <Event :event="event" />
         </div>
       </v-col>
