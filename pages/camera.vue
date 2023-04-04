@@ -79,7 +79,6 @@
             }"
             class="highlighter"
           ></div>
-          <v-btn @click="capture()"> Capture </v-btn>
         </div>
       </div>
     </v-col>
