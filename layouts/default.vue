@@ -32,8 +32,7 @@
       <v-toolbar-title v-text="title" />
       <v-spacer />
       <div v-if="isAuth">
-        {{ $fire.auth.currentUser.email }}
-        <v-btn color="warning" class="mx-5" @click="logout" text>Logout</v-btn>
+        <v-btn color="warning" @click="logout" text>Logout</v-btn>
       </div>
       <div v-else>
         <v-btn to="/login" text>Login</v-btn>
@@ -61,6 +60,11 @@ export default {
       fixed: false,
       items: [
         {
+          icon: 'mdi-home',
+          title: 'Home',
+          to: '/',
+        },
+        {
           icon: 'mdi-script-text',
           title: 'Feed',
           to: '/feed',
@@ -79,7 +83,6 @@ export default {
   },
   methods: {
     logout() {
-      console.log(this.$fire.auth)
       this.$fire.auth.signOut()
     },
   },
