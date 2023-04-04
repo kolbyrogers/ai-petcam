@@ -26,36 +26,45 @@
               :items="items"
               label="Species"
               required
-            ></v-select
-            ><v-select
-              class="mb-8"
-              v-model="object"
-              :items="objects"
-              label="When my pet is near..."
-              required
             ></v-select>
-            <v-checkbox
-              v-model="alert"
-              :label="`Alert me (in development)`"
-            ></v-checkbox>
-            <v-text-field
-              v-if="alert"
-              v-model="phoneNumber"
-              label="Phone Number"
-              minLength="11"
-              maxLength="11"
-              required
-            ></v-text-field>
-            <v-checkbox v-model="playback" :label="`Play a noise`"></v-checkbox>
-            <v-select
-              v-if="playback"
+            <v-switch
               class="mb-8"
-              v-model="noise"
-              :items="noises"
-              label="Noise"
-              required
-            ></v-select>
-            <div class="mb-4" v-for="error in errors" :key="error.id">
+              v-model="monitorObject"
+              hide-details
+              inset
+              label="Monitor a specific object"
+            ></v-switch>
+            <div v-if="monitorObject">
+              <v-select
+                class="mb-8"
+                v-model="object"
+                :items="objects"
+                label="When my pet is near..."
+                required
+              ></v-select>
+              <v-checkbox
+                v-model="alert"
+                label="Alert me (in development)"
+              ></v-checkbox>
+              <v-text-field
+                v-if="alert"
+                v-model="phoneNumber"
+                label="Phone Number"
+                minLength="11"
+                maxLength="11"
+                required
+              ></v-text-field>
+              <v-checkbox v-model="playback" label="Play a noise"></v-checkbox>
+              <v-select
+                v-if="playback"
+                class="mb-8"
+                v-model="noise"
+                :items="noises"
+                label="Noise"
+                required
+              ></v-select>
+            </div>
+            <div class="my-4" v-for="error in errors" :key="error.id">
               {{ error }}
             </div>
             <div class="mt-8">
@@ -104,6 +113,7 @@ import * as cocoSsd from '@tensorflow-models/coco-ssd'
 
 export default {
   data: () => ({
+    monitorObject: false,
     cooldown: true,
     interactObject: null,
     alert: false,
@@ -305,7 +315,8 @@ export default {
       if (
         !this.name ||
         !this.select ||
-        !this.object ||
+        (this.monitorObject && !this.object) ||
+        (this.object && (!this.alert || !this.playback)) ||
         (this.alert && !this.phoneNumber) ||
         (this.playback && !this.noise)
       ) {
