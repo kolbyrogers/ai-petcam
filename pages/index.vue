@@ -23,12 +23,14 @@
             your pet is near
           </li>
           <li>
-            The AI Petcam app also records photos when an interaction is
-            detected, so you can review past images and see what your pet has
-            been up to while you were away
+            The AI Petcam records photos when an interaction is detected, so you
+            can review past images and see what your pet has been up to while
+            you were away
           </li>
         </ul>
-        <v-btn id="btn" to="/camera">Start Monitoring</v-btn>
+        <v-btn id="btn" class="mb-4" to="/camera"
+          ><v-icon class="pr-4">mdi-camera</v-icon>Start Monitoring</v-btn
+        >
       </v-col>
     </v-row>
   </div>
@@ -50,27 +52,23 @@ export default {
 h2 {
   text-align: center;
   font-size: 2rem;
-  font-weight: 300;
+  font-weight: 350;
   margin-bottom: 2rem;
 }
 p {
   font-size: 1.25rem;
-  font-weight: 300;
+  font-weight: 350;
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
 ul {
   font-size: 1.25rem;
-  font-weight: 300;
+  font-weight: 350;
   margin-top: 2rem;
   margin-bottom: 2rem;
 }
 li {
   margin-top: 1rem;
   margin-bottom: 1rem;
-}
-#btn {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
 }
 </style>
