@@ -10,7 +10,7 @@ app.use(cors())
 
 // Test
 app.get('/test', function (req, res) {
-  res.send('Test successful')
+  res.send('OK')
 })
 
 // Events
