@@ -19,7 +19,7 @@ export default {
       let confirm = window.confirm('Are you sure you want to delete this event?')
       if (!confirm) return
       try {
-        let res = await this.$axios.delete(`http://localhost:3000/api/events/${eventID}`)
+        let res = await this.$axios.delete(`/api/events/${eventID}`)
         if (res.status === 200) {
           this.deleted = true
         }
