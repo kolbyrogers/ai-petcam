@@ -100,6 +100,7 @@
             }"
             class="highlighter"
           ></div>
+          <p v-if="!cooldown">On cooldown</p>
         </div>
       </div>
     </v-col>
@@ -145,7 +146,9 @@ export default {
     },
   }),
   methods: {
-    async sendAlert() {},
+    async sendAlert() {
+      console.log('Sending alert...')
+    },
     playNoise() {
       var a = new Audio(this.noisesDict[this.noise])
       a.play()
@@ -283,14 +286,17 @@ export default {
     handleInteraction() {
       if (this.cooldown) {
         this.cooldown = false
-        this.capture()
-        if (this.interactObject === this.object.toLowerCase()) {
-          if (this.alert) {
+        setTimeout(() => {
+          this.capture()
+          if (this.interactObject === this.object.toLowerCase()) {
+            if (this.alert) {
+              this.sendAlert()
+            }
+            if (this.playback) {
+              this.playNoise()
+            }
           }
-          if (this.playback) {
-            this.playNoise()
-          }
-        }
+        }, 1000)
         setTimeout(() => {
           this.cooldown = true
         }, 60000)
@@ -316,7 +322,7 @@ export default {
         !this.name ||
         !this.select ||
         (this.monitorObject && !this.object) ||
-        (this.object && (!this.alert || !this.playback)) ||
+        (this.object && !this.alert && !this.playback) ||
         (this.alert && !this.phoneNumber) ||
         (this.playback && !this.noise)
       ) {

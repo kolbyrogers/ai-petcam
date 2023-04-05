@@ -1,6 +1,7 @@
 <template>
   <v-app dark>
     <v-navigation-drawer
+      v-if="isAuth"
       id="nav-drawer"
       v-model="drawer"
       :mini-variant="miniVariant"
