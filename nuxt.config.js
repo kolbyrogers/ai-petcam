@@ -2,8 +2,8 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   axios: {
-    browserBaseURL: 'http://localhost:3000',
-    // browserBaseURL: 'https://ai-petcam.onrender.com',
+    // browserBaseURL: 'http://localhost:3000',
+    browserBaseURL: 'https://ai-petcam.onrender.com',
   },
 
   serverMiddleware: ['~/api'],
