@@ -18,14 +18,12 @@
               class="my-8"
               v-model="name"
               label="Name"
-              required
             ></v-text-field>
             <v-select
               class="mb-8"
               v-model="select"
               :items="items"
               label="Species"
-              required
             ></v-select>
             <v-switch
               class="mb-8"
@@ -40,19 +38,13 @@
                 v-model="object"
                 :items="objects"
                 label="When my pet is near..."
-                required
               ></v-select>
-              <v-checkbox
-                v-model="alert"
-                label="Alert me (in development)"
-              ></v-checkbox>
+              <v-checkbox v-model="alert" label="Alert me (sms)"></v-checkbox>
               <v-text-field
                 v-if="alert"
                 v-model="phoneNumber"
                 label="Phone Number"
-                minLength="11"
-                maxLength="11"
-                required
+                hint="Format: +1XXXXXXXXXX"
               ></v-text-field>
               <v-checkbox v-model="playback" label="Play a noise"></v-checkbox>
               <v-select
@@ -61,7 +53,6 @@
                 v-model="noise"
                 :items="noises"
                 label="Noise"
-                required
               ></v-select>
             </div>
             <div class="my-4" v-for="error in errors" :key="error.id">
@@ -130,7 +121,7 @@ export default {
     select: '',
     object: '',
     noise: '',
-    phoneNumber: '',
+    phoneNumber: '+1',
     items: ['Dog', 'Cat', 'Person'],
     objects: ['Trashcan', 'Couch', 'Bed', 'Cell Phone'],
     noises: ['Whistle', 'Clap', 'No'],
@@ -141,30 +132,30 @@ export default {
     },
     errors: [],
     imgUrl: '',
-    rules: {
-      counter: (value) => value.length <= 14,
-    },
   }),
   methods: {
     async sendAlert() {
-      console.log('Sending alert...')
+      const body = {
+        message: `${this.name} is near the ${this.object}!`,
+        number: this.phoneNumber,
+      }
+      const response = await this.$axios.post('/api/sms', body)
+      console.table(response)
+      if (response.status != 201) {
+        alert('Error sending SMS')
+      }
     },
+
     playNoise() {
       var a = new Audio(this.noisesDict[this.noise])
       a.play()
     },
+
     recalculateVideoScale() {
       this.ratioY = this.video.clientHeight / this.video.videoHeight
       this.ratioX = this.video.clientWidth / this.video.videoWidth
     },
-    acceptNumber() {
-      var x = this.phoneNumber
-        .replace(/\D/g, '')
-        .match(/(\d{0,3})(\d{0,3})(\d{0,4})/)
-      this.phoneNumber = !x[2]
-        ? x[1]
-        : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '')
-    },
+
     async predictWebcam() {
       this.predictions = []
       let predictions = await app.model.detect(this.video)
@@ -179,6 +170,7 @@ export default {
       window.requestAnimationFrame(this.predictWebcam)
       window.addEventListener('resize', this.recalculateVideoScale)
     },
+
     stopCamera() {
       if (this.camStarted) {
         this.configured = false
@@ -186,6 +178,7 @@ export default {
         this.video.srcObject.getTracks().forEach((track) => track.stop())
       }
     },
+
     capture() {
       const canvas = document.createElement('canvas')
       canvas.width = this.video.videoWidth
@@ -202,6 +195,7 @@ export default {
         this.saveImage(blob)
       })
     },
+
     async saveImage(blob) {
       const timestamp = Date.now()
       try {
@@ -231,6 +225,7 @@ export default {
         console.error(err)
       }
     },
+
     startCamera() {
       const constraints = {
         video: {
@@ -254,6 +249,7 @@ export default {
           })
       }
     },
+
     distance(bbox1, bbox2) {
       let x1 = bbox1[0]
       let x2 = bbox2[0]
@@ -283,6 +279,7 @@ export default {
 
       return Math.sqrt(xDif * xDif + yDif * yDif)
     },
+
     handleInteraction() {
       if (this.cooldown) {
         this.cooldown = false
@@ -302,6 +299,7 @@ export default {
         }, 60000)
       }
     },
+
     checkInteractions(item) {
       for (let n = 0; n < this.predictions.length; n++) {
         if (
@@ -313,20 +311,39 @@ export default {
         }
       }
     },
+
     isNear(item1, item2) {
       return this.distance(item1.bbox, item2.bbox) <= 0
     },
-    submit() {
+
+    validate() {
       this.errors = []
-      if (
-        !this.name ||
-        !this.select ||
-        (this.monitorObject && !this.object) ||
-        (this.object && !this.alert && !this.playback) ||
-        (this.alert && !this.phoneNumber) ||
-        (this.playback && !this.noise)
-      ) {
-        this.errors.push('Please fill out all fields')
+      if (!this.name) {
+        this.errors.push('Name is required')
+      }
+      if (!this.select) {
+        this.errors.push('Object is required')
+      }
+      if (this.monitorObject && !this.object) {
+        this.errors.push('Object to monitor is required')
+      }
+      if (this.object && !this.alert && !this.playback) {
+        this.errors.push('Select an action')
+      }
+      if (this.alert && !this.phoneNumber) {
+        this.errors.push('Phone number is required')
+      }
+      if (this.alert && !this.phoneNumber.match(/^\+[1]{1}[0-9]{10}$/)) {
+        this.errors.push('Phone number is invalid')
+      }
+      if (this.playback && !this.noise) {
+        this.errors.push('Select a noise')
+      }
+    },
+
+    submit() {
+      this.validate()
+      if (this.errors.length > 0) {
         return
       }
       this.configured = true
