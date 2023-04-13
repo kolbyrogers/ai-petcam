@@ -2,6 +2,9 @@ const express = require('express')
 const cors = require('cors')
 const model = require('./model')
 const Event = model.Event
+const accountSid = 'ACc39f2297f0daab17b61bbf660de0fdaa'
+const authToken = process.env.TWILLIO
+const client = require('twilio')(accountSid, authToken)
 
 const app = express()
 app.use(express.json())
@@ -11,6 +14,22 @@ app.use(cors())
 // Test
 app.get('/test', function (req, res) {
   res.send('OK')
+})
+
+// Twilio
+app.post('/sms', async (req, res) => {
+  console.log(req.body)
+  try {
+    let message = await client.messages.create({
+      body: req.body.message,
+      from: '+18449653158',
+      to: req.body.number,
+    })
+    res.status(201).json(message.sid)
+    console.log(message)
+  } catch (err) {
+    res.status(500).json(err)
+  }
 })
 
 // Events
