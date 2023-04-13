@@ -4,7 +4,7 @@ export default function ({ app, route, redirect }) {
   }
   if (route.path === '/login') {
     if (app.$fire.auth.currentUser) {
-      return redirect('/feed')
+      return redirect('/')
     }
   }
 }

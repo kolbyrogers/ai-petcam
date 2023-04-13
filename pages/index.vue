@@ -28,7 +28,7 @@
             you were away
           </li>
         </ul>
-        <v-btn id="btn" class="mb-4" to="/camera"
+        <v-btn id="btn" class="mb-8" to="/camera"
           ><v-icon class="pr-4">mdi-camera</v-icon>Start Monitoring</v-btn
         >
       </v-col>
@@ -44,7 +44,6 @@ export default {
 
 <style scoped>
 #petcam {
-  /* centered horizontally */
   display: block;
   margin-left: auto;
   margin-right: auto;
