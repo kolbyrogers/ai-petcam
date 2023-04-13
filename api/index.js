@@ -18,7 +18,6 @@ app.get('/test', function (req, res) {
 
 // Twilio
 app.post('/sms', async (req, res) => {
-  console.log(req.body)
   try {
     let message = await client.messages.create({
       body: req.body.message,
@@ -26,8 +25,8 @@ app.post('/sms', async (req, res) => {
       to: req.body.number,
     })
     res.status(201).json(message.sid)
-    console.log(message)
   } catch (err) {
+    console.error(err)
     res.status(500).json(err)
   }
 })
