@@ -296,18 +296,34 @@ export default {
         }, 1000)
         setTimeout(() => {
           this.cooldown = true
-        }, 60000)
+        }, 45000)
       }
     },
 
+    recheck(item) {
+      setTimeout(() => {
+        for (let n = 0; n < this.predictions.length; n++) {
+          if (
+            this.isNear(item, this.predictions[n]) &&
+            this.predictions[n].class != this.select &&
+            this.predictions[n].class === this.interactObject
+          ) {
+            this.handleInteraction()
+          }
+        }
+      }, 3000)
+    },
+
     checkInteractions(item) {
-      for (let n = 0; n < this.predictions.length; n++) {
-        if (
-          this.isNear(item, this.predictions[n]) &&
-          this.predictions[n].class != this.select
-        ) {
-          this.interactObject = this.predictions[n].class
-          this.handleInteraction()
+      if (this.cooldown) {
+        for (let n = 0; n < this.predictions.length; n++) {
+          if (
+            this.isNear(item, this.predictions[n]) &&
+            this.predictions[n].class != this.select
+          ) {
+            this.interactObject = this.predictions[n].class
+            this.recheck(item)
+          }
         }
       }
     },
