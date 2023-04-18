@@ -91,7 +91,7 @@
             }"
             class="highlighter"
           ></div>
-          <p v-if="!cooldown">On cooldown</p>
+          <p v-if="!cooldown">cooldown</p>
         </div>
       </div>
     </v-col>
@@ -122,8 +122,8 @@ export default {
     object: '',
     noise: '',
     phoneNumber: '+1',
-    items: ['Dog', 'Cat', 'Person'],
-    objects: ['Trashcan', 'Couch', 'Bed', 'Cell Phone'],
+    items: ['Dog', 'Cat', 'Bird', 'Horse', 'Sheep', 'Person'],
+    objects: ['Couch', 'Potted Plant', 'Bowl', 'Bed', 'Toilet', 'Cell Phone'],
     noises: ['Whistle', 'Clap', 'No'],
     noisesDict: {
       Whistle: '/whistle.mp3',
@@ -134,6 +134,12 @@ export default {
     imgUrl: '',
   }),
   methods: {
+    resetCooldown() {
+      setTimeout(() => {
+        this.cooldown = true
+      }, 45000)
+    },
+
     async sendAlert() {
       const body = {
         message: `${this.name} is near the ${this.object}!`,
@@ -159,14 +165,14 @@ export default {
     async predictWebcam() {
       this.predictions = []
       let predictions = await app.model.detect(this.video)
-      for (let n = 0; n < predictions.length; n++) {
-        if (predictions[n].score > 0.5) {
-          if (this.select.toLowerCase() == predictions[n].class) {
-            this.checkInteractions(predictions[n])
+      predictions.forEach((prediction) => {
+        if (prediction.score > 0.5) {
+          if (this.select.toLowerCase() == prediction.class) {
+            this.checkInteractions(prediction)
           }
-          this.predictions.push(predictions[n])
+          this.predictions.push(prediction)
         }
-      }
+      })
       window.requestAnimationFrame(this.predictWebcam)
       window.addEventListener('resize', this.recalculateVideoScale)
     },
@@ -283,20 +289,16 @@ export default {
     handleInteraction() {
       if (this.cooldown) {
         this.cooldown = false
-        setTimeout(() => {
-          this.capture()
-          if (this.interactObject === this.object.toLowerCase()) {
-            if (this.alert) {
-              this.sendAlert()
-            }
-            if (this.playback) {
-              this.playNoise()
-            }
+        this.capture()
+        if (this.interactObject === this.object.toLowerCase()) {
+          if (this.alert) {
+            this.sendAlert()
           }
-        }, 1000)
-        setTimeout(() => {
-          this.cooldown = true
-        }, 45000)
+          if (this.playback) {
+            this.playNoise()
+          }
+        }
+        this.resetCooldown()
       }
     },
 
