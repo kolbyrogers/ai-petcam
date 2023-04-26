@@ -1,68 +1,114 @@
-# AI Petcam
+<div id="top"></div>
 
-## Build Setup
+<!-- PROJECT SHIELDS -->
 
-```bash
-# install dependencies
-$ npm install
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
 
-# serve with hot reload at localhost:3000
-$ npm run dev
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
 
-# build for production and launch server
-$ npm run build
-$ npm run start
+  <a href="https://github.com/kolbyrogers/ai-petcam">
+    <img src="static/ai-petcam.png" alt="Logo" width="80" height="80">
+  </a>
 
-# generate static project
-$ npm run generate
+  <h3 align="center">AI Petcam</h3>
+
+  <p align="center">
+    An awesome full stack web app to keep track of your pets while you're away!
+    <br />
+    <br />
+    <a href="https://ai-petcam.onrender.com" target="_blank">Hosted Site</a>
+    ·
+    <a href="https://github.com/kolbyrogers/ai-petcam/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/kolbyrogers/ai-petcam/issues">Request Feature</a>
+  </p>
+</div>
+
+<!-- ABOUT THE PROJECT -->
+
+## About The Project
+
+Built for my senior project at UTU, this app allows users to turn an old smartphone (or other device with a camera) into an AI powered petcam. Using the COCO-SSD model, the app will detect when a pet is in the frame, and interacting with other household objects. It will then create an event, and store it in a log so the user can see what their pets have been up to. The user can also configure it to monitor a specific object, and the app will send an SMS alert, and/or play a noise for the pet when the object is interacted with.
+
+Project features:
+
+- A responsive client interface
+- RESTful API
+- Client-side and server-side data validation
+- Data persistence
+- User authentication and authorization
+
+### Built With
+
+- Vue.js (Nuxt)
+- Express
+- TensorFlow.js (COCO-SSD)
+- Firebase
+  - Authentication (google), Image Storage
+- MongoDB
+
+### Special Thanks
+
+- Twilio
+  - I used Twilio's API to send SMS alerts to users
+- Render
+  - I used render to host the app
+
+<!-- SETUP -->
+
+## Setup
+
+### Clone Repo
+
+```sh
+git clone git@github.com:kolbyrogers/ai-petcam.git
 ```
 
-For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
+### Install Dependencies
 
-## Special Directories
+```sh
+npm install
+```
 
-You can create the following extra directories, some of which have special behaviors. Only `pages` is required; you can delete them if you don't want to use their functionality.
+### Serve at localhost:3000
 
-### `assets`
+```sh
+npm run dev
+```
 
-The assets directory contains your uncompiled assets such as Stylus or Sass files, images, or fonts.
+<!-- CONTRIBUTING -->
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/assets).
+## Contributing
 
-### `components`
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-The components directory contains your Vue.js components. Components make up the different parts of your page and can be reused and imported into your pages, layouts and even other components.
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/components).
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-### `layouts`
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-Layouts are a great help when you want to change the look and feel of your Nuxt app, whether you want to include a sidebar or have distinct layouts for mobile and desktop.
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/layouts).
-
-### `pages`
-
-This directory contains your application views and routes. Nuxt will read all the `*.vue` files inside this directory and setup Vue Router automatically.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/get-started/routing).
-
-### `plugins`
-
-The plugins directory contains JavaScript plugins that you want to run before instantiating the root Vue.js Application. This is the place to add Vue plugins and to inject functions or constants. Every time you need to use `Vue.use()`, you should create a file in `plugins/` and add its path to plugins in `nuxt.config.js`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/plugins).
-
-### `static`
-
-This directory contains your static files. Each file inside this directory is mapped to `/`.
-
-Example: `/static/robots.txt` is mapped as `/robots.txt`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/static).
-
-### `store`
-
-This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
+[contributors-shield]: https://img.shields.io/github/contributors/kolbyrogers/ai-petcam.svg?style=for-the-badge
+[contributors-url]: https://github.com/kolbyrogers/ai-petcam/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/kolbyrogers/ai-petcam.svg?style=for-the-badge
+[forks-url]: https://github.com/kolbyrogers/ai-petcam/network/members
+[stars-shield]: https://img.shields.io/github/stars/kolbyrogers/ai-petcam.svg?style=for-the-badge
+[stars-url]: https://github.com/kolbyrogers/ai-petcam/stargazers
+[issues-shield]: https://img.shields.io/github/issues/kolbyrogers/ai-petcam.svg?style=for-the-badge
+[issues-url]: https://github.com/kolbyrogers/ai-petcam/issues
+[license-shield]: https://img.shields.io/github/license/kolbyrogers/ai-petcam.svg?style=for-the-badge
+[license-url]: https://github.com/kolbyrogers/ai-petcam/LICENSE.txt
