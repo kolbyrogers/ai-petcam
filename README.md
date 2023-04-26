@@ -13,7 +13,7 @@
 <div align="center">
 
   <a href="https://github.com/kolbyrogers/ai-petcam">
-    <img src="static/ai-petcam.png" alt="Logo" width="80" height="80">
+    <img src="static/ai-petcam.png" alt="Logo" width="240" height="240">
   </a>
 
   <h3 align="center">AI Petcam</h3>
