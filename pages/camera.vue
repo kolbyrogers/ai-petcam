@@ -91,7 +91,6 @@
             }"
             class="highlighter"
           ></div>
-          <p v-if="!cooldown">cooldown</p>
         </div>
       </div>
     </v-col>
